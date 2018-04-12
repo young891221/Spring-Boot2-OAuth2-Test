@@ -11,6 +11,5 @@ spring:
           facebook:
             client-id: 465358593799840
             client-secret: a37286e3dae00dcdce628f40dfe363f5
-debug: true
 
 
