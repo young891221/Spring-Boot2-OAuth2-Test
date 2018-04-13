@@ -40,14 +40,10 @@ public class LoginController {
         Map userAttributes = new HashMap();
 
         if (!StringUtils.isEmpty(userInfoEndpointUri)) {
-            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken()
-                    .getTokenValue());
+            headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken().getTokenValue());
 
-            HttpEntity<String> entity = new HttpEntity<>("", headers);
-
-            ResponseEntity<Map> response = restTemplate.exchange(userInfoEndpointUri, HttpMethod.GET, entity, Map.class);
+            ResponseEntity<Map> response = new RestTemplate().exchange(userInfoEndpointUri, HttpMethod.GET, new HttpEntity<>("", headers), Map.class);
             userAttributes = response.getBody();
         }
 
