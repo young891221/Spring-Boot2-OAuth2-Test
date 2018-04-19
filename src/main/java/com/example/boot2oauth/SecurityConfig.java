@@ -1,8 +1,11 @@
 package com.example.boot2oauth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties.Registration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,6 +22,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -54,45 +58,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new NimbusAuthorizationCodeTokenResponseClient();
     }
 
-    private static List<String> clients = Arrays.asList("google", "facebook", "kakao");
-
     @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        List<ClientRegistration> registrations = clients.stream()
-                .map(c -> getRegistration(c))
-                .filter(registration -> registration != null)
+    public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties oAuth2ClientProperties) {
+        List<ClientRegistration> registrations = oAuth2ClientProperties.getRegistration().keySet().stream()
+                .map(client -> getRegistration(oAuth2ClientProperties, client))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return new InMemoryClientRegistrationRepository(registrations);
     }
 
-    private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
-
-    @Autowired
-    private Environment env;
-
-    private ClientRegistration getRegistration(String client) {
-        String clientId = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-id");
-
-        if (clientId == null) {
-            return null;
-        }
-
-        String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-secret");
-        if (client.equals("google")) {
+    private ClientRegistration getRegistration(OAuth2ClientProperties clientProperties, String client) {
+        if ("google".equals(client)) {
+            Registration registration = clientProperties.getRegistration().get("google");
             return CommonOAuth2Provider.GOOGLE.getBuilder(client)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
+                    .clientId(registration.getClientId())
+                    .clientSecret(registration.getClientSecret())
                     .build();
         }
-        if (client.equals("facebook")) {
+        if ("facebook".equals(client)) {
+            Registration registration = clientProperties.getRegistration().get("facebook");
             return CommonOAuth2Provider.FACEBOOK.getBuilder(client)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
+                    .clientId(registration.getClientId())
+                    .clientSecret(registration.getClientSecret())
                     .build();
-        }
-        if (client.equals("kakao")) {
-            return null;
         }
         return null;
     }
