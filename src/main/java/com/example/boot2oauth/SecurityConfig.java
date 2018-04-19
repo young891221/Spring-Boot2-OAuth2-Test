@@ -1,15 +1,25 @@
 package com.example.boot2oauth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.oauth2.client.endpoint.NimbusAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by KimYJ on 2018-04-12.
@@ -44,9 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new NimbusAuthorizationCodeTokenResponseClient();
     }
 
-    /*private static List<String> clients = Arrays.asList("google", "facebook");
+    private static List<String> clients = Arrays.asList("google", "facebook", "kakao");
 
-    //@Bean
+    @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         List<ClientRegistration> registrations = clients.stream()
                 .map(c -> getRegistration(c))
@@ -81,6 +91,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .clientSecret(clientSecret)
                     .build();
         }
+        if (client.equals("kakao")) {
+            return null;
+        }
         return null;
-    }*/
+    }
 }

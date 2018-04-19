@@ -11,5 +11,8 @@ spring:
           facebook:
             client-id:
             client-secret:
+          kakao:
+            client-id:
+            client-secret:
 
 
