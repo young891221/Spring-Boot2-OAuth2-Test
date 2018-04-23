@@ -29,7 +29,6 @@ public class LoginController {
 
     @GetMapping("/loginSuccess")
     public Object getLoginInfo(OAuth2AuthenticationToken authentication) {
-
         OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
 
         String userInfoEndpointUri = client.getClientRegistration()
