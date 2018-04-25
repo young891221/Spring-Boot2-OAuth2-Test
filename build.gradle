@@ -28,9 +28,7 @@ dependencies {
 	compile('org.springframework.security:spring-security-oauth2-client')
 	compile('org.springframework.security:spring-security-oauth2-jose')
 	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
 }
